@@ -2,14 +2,16 @@ package net.vis4.geom
 {
 	import flash.display.Graphics;
 	import flash.geom.Point;
+	
 	/**
-	 * ...
+	 * Catmull-Rom Spline 
 	 * 
 	 * based on
 	 * http://flashcove.net/795/cubic-spline-generation-in-as3-catmull-rom-curves/
 	 *
 	 * @author Gregor Aisch
 	 */
+	
 	public class CatmullRomSpline 
 	{
 		
@@ -24,8 +26,6 @@ package net.vis4.geom
 				if (moveToFirst && i == 0) g.moveTo(p.x, p.y);
 				else g.lineTo(p.x, p.y);
 			}
-			
-			
 		}
 		
 		protected static function getSplinePoints(points:Array, closed:Boolean):Array 
@@ -44,19 +44,21 @@ package net.vis4.geom
 				p3 = points[!closed ? Math.min(k + 3, maxk) : (k + 3) % n];
 				
 				for (var g:Number = 0.0; g < 1.0; g += incr) { 
-					
-					
 					setX = calculateCatmull(g, p0.x, p1.x, p2.x, p3.x);
-					setY = calculateCatmull(g, p0.y, p1.y, p2.y, p3.y);
-					
+					setY = calculateCatmull(g, p0.y, p1.y, p2.y, p3.y);	
 					spoints.push(new Point(setX[0], setY[0]));
-					
+					/*if (true || p1 == p2 == p3 == points[maxk]) {
+						spoints.push(new Point(setX[1], setY[1]));
+						spoints.push(new Point(setX[2], setY[2]));
+						
+						0179 1414
+						
+					}*/
 				}
 			}
 			return spoints;
 		}
 		
-
 		protected static function calculateCatmull(t:Number, p0:Number, p1:Number, p2:Number, p3:Number):Array
 		{
 			var t2:Number = t * t,
@@ -66,8 +68,6 @@ package net.vis4.geom
 				n3:Number = (2 * p0 - 5 * p1 + 4 * p2 - p3) + t * 3.0 * ( -p0 + 3 * p1 - 3 * p2 + p3);
 			return [n1, n2, n3];
 		}
-		
-		
 	}
 
 }
