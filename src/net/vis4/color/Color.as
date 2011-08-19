@@ -761,6 +761,42 @@ package net.vis4.color
 		{
 			return Color.fromInt(_u, _mode);
 		}
+		
+
+		 /**
+		  * interpolates between two int colors.
+		  * 
+		  * @param	c1	color A
+		  * @param	c2 color B
+		  * @param	t	ratio between color A and B [0..1]
+		  * @param	mode	color space in which the color should be interpolated [hsl|hsv|hsb|hsi]
+		  * @return interpolated color (int value)
+		  */
+		public static function map(c1:uint, c2:uint, t:Number = 0.5, mode:String = 'hsl'):uint
+		{
+			var col1:Color = Color.fromInt(c1, mode);
+			var col2:Color = Color.fromInt(c2, mode);
+			
+			var out:Color = new Color(mode);
+			
+			var lbvProp:String;
+			switch (mode) {
+				case 'hsv': lbvProp = '_value'; break;
+				case 'hsl': lbvProp = '_lightness'; break;
+				case 'hsb': lbvProp = '_brightness'; break;
+				case 'hsi': lbvProp = '_intensity'; break;
+			}
+			
+			out._hue = col1._saturation > 0 && col2._saturation > 0 ? col1._hue + t * (col2._hue - col1._hue) : col1._saturation > 0 ? col1._hue : col2._hue;
+			out._saturation = c1 == 0xffffff || c1 == 0 ? col2._saturation : 
+										c2 == 0xffffff || c2 == 0 ? col1._saturation : 
+											col1._saturation + t * (col2._saturation - col1._saturation);
+			
+
+			
+			out[lbvProp] = col1[lbvProp] + t * (col2[lbvProp] - col1[lbvProp]);
+			return out._int;
+		}
 	}
 	
 }
