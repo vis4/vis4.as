@@ -774,6 +774,12 @@ package net.vis4.color
 		  */
 		public static function map(c1:uint, c2:uint, t:Number = 0.5, mode:String = 'hsl'):uint
 		{
+			if (mode == 'rgb') {
+				return c1 * (1 - t) + c2 * t;
+			}
+			
+			
+			
 			var col1:Color = Color.fromInt(c1, mode);
 			var col2:Color = Color.fromInt(c2, mode);
 			
@@ -787,14 +793,23 @@ package net.vis4.color
 				case 'hsi': lbvProp = '_intensity'; break;
 			}
 			
-			out._hue = col1._saturation > 0 && col2._saturation > 0 ? col1._hue + t * (col2._hue - col1._hue) : col1._saturation > 0 ? col1._hue : col2._hue;
+			// 0, 50 > diff = 50
+			// 200 == -160
+			
+			var hueDiff:Number = col2._hue - col1._hue;
+			if (hueDiff > 180) hueDiff -= 360;
+			else if (hueDiff < -180) hueDiff += 360;
+			
+			out._hue = col1._saturation > 0 && col2._saturation > 0 ? 
+				col1._hue + t * hueDiff: 
+				col1._saturation > 0 ? col1._hue : col2._hue;
+				
 			out._saturation = c1 == 0xffffff || c1 == 0 ? col2._saturation : 
 										c2 == 0xffffff || c2 == 0 ? col1._saturation : 
 											col1._saturation + t * (col2._saturation - col1._saturation);
 			
-
-			
 			out[lbvProp] = col1[lbvProp] + t * (col2[lbvProp] - col1[lbvProp]);
+			
 			return out._int;
 		}
 	}

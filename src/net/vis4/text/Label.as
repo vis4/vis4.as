@@ -88,6 +88,11 @@
 			setTextFormat(fmt);
 		}
 		
+		public function get color():uint
+		{
+			return uint(defaultTextFormat.color);
+		}
+		
 		public function get font():Font { return _font; }
 		
 		override public function set width(value:Number):void 
